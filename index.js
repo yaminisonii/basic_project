@@ -3,6 +3,7 @@ require("dotenv").config()
 const router = require("./src/routes/user.routes")
 const sequelize =  require("./src/db/index")
 const User =  require("./src/models/user.model")
+const generateResetToken = require("./src/middleware/auth")
 
 const app = require("./app")
 
@@ -17,9 +18,9 @@ try {
 }
 
 User.sync({force : false})
-// User.sync({alter: true})
+User.sync({alter: true})
 
-app.listen(process.env.PORT, (req, res) => {
+app.listen(process.env.PORT || 3000, (req, res) => {
     console.log(`server started ${process.env.PORT}`);
 })
 
