@@ -1,13 +1,13 @@
 const express = require("express")
 const {home, signup, signin, getUsers, getUser, changePassword, passwordReset, userPasswordReset} = require("../controllers/user.controller")
-const {auth} = require("../middleware/auth")
+const auth = require("../middleware/auth")
 
 const router = express.Router()
 
 router.get("/", home)
 // login process
 router.post("/signup", signup)
-router.post("/signin", auth, signin)
+router.post("/signin", signin)
 
 //getting all users
 router.get("/getusers", auth, getUsers)

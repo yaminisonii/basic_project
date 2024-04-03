@@ -29,16 +29,19 @@ const signup = async(req, res) => {
             return res.json("user already exists")
         }
 
-        const hashedPassword = await bcrypt.hash(password, 10) // hashing password
-        const token = jwt.sign({username: username}, secret_key, {expiresIn: '5d'}) // generating token
-
-        const newUser = User.create({ // creating a new user if user doesn't exists
-            username: username,
-            password: hashedPassword,
-            email: email,
-            token: token
-        })
-        res.json({username: username, password: password, email: email, token: token})
+            const hashedPassword = await bcrypt.hash(password, 10) // hashing password
+    
+            const newUser = await User.create({ // creating a new user if user doesn't exists
+                username: username,
+                password: hashedPassword,
+                email: email,
+            })
+    
+            // generating token
+            const token = jwt.sign({username: username, id: newUser.id}, secret_key, {expiresIn: '5d'})
+            await newUser.update({token: token})
+            // console.log("token", token); 
+        res.status(200).json({username: username, password: password, email: email, token: token})
 
     } catch (error) {
         return error
@@ -69,8 +72,16 @@ const signin = async(req, res) => {
             res.send("invalid credentials")
         }
 
-        const token = jwt.sign({id: existingUser.id, email: existingUser.email}, secret_key, {expiresIn: '5d'}) // matching token for existing user 
+        const token = jwt.sign({id: existingUser.id, email: existingUser.email, username: existingUser.username}, secret_key, {expiresIn: '5d'}) // matching token for existing user 
+        const decodedToken = jwt.decode(token)
         // res.status(200).json({username: username, email: email, password: password, token})
+        console.log("signin token", token);
+        console.log("decoded token", decodedToken);
+        // console.log("email", email);
+        // console.log("username", username);
+        // console.log("password", password);
+        // console.log("id", existingUser.id);
+        // console.log("id", id);
         res.send("signed in")
     } catch (error) {
         return error

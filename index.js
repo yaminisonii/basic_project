@@ -1,14 +1,16 @@
 const express = require("express")
 require("dotenv").config()
 const router = require("./src/routes/user.routes")
+const postRouter = require("./src/routes/post.router")
 const sequelize =  require("./src/db/index")
 const User =  require("./src/models/user.model")
-const generateResetToken = require("./src/middleware/auth")
+const Post = require("./src/models/post.model")
 
 const app = require("./app")
 
 app.use(express.json())
 app.use("/users", router)
+app.use("/posts", postRouter)
 
 try {
     sequelize
@@ -20,7 +22,11 @@ try {
 User.sync({force : false})
 User.sync({alter: true})
 
+Post.sync({force: false})
+Post.sync({alter: true})
+
+
 app.listen(process.env.PORT || 3000, (req, res) => {
-    console.log(`server started ${process.env.PORT}`);
+    console.log(`server started`);
 })
 
