@@ -73,10 +73,10 @@ const signin = async(req, res) => {
         }
 
         const token = jwt.sign({id: existingUser.id, email: existingUser.email, username: existingUser.username}, secret_key, {expiresIn: '5d'}) // matching token for existing user 
-        const decodedToken = jwt.decode(token)
+        // const decodedToken = jwt.decode(token)
         // res.status(200).json({username: username, email: email, password: password, token})
-        console.log("signin token", token);
-        console.log("decoded token", decodedToken);
+        // console.log("signin token", token);
+        // console.log("decoded token", decodedToken);
         // console.log("email", email);
         // console.log("username", username);
         // console.log("password", password);

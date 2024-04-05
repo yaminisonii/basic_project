@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require("../db/index")
+// const Post = require("./post.model")
 
 const User = sequelize.define('User', {
   username: {
@@ -16,13 +17,15 @@ const User = sequelize.define('User', {
   },
   token: {
     type: DataTypes.STRING
-    // allowNull: false
   }
 }, 
 {
-  timestamps: false,
+  timestamps: true,
   tableName: 'users',
   schema: 'project'
 })
 
+// User.hasMany(Post,{foreignKey: 'userId'})
+
 module.exports = User
+
