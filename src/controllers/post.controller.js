@@ -204,8 +204,7 @@ const getAllInfo = async(req, res) => {
     }
 }
 
-
-
 module.exports = {createPost, getPost, getAllPost, 
                 updatePost, deletePost, filterPost, 
                 searchPost, pagination, getAllInfo}
+                

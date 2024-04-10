@@ -1,7 +1,7 @@
 const express = require("express")
 const {createPost, getPost, getAllPost, updatePost, deletePost,
     filterPost, searchPost, pagination, getAllInfo} = require("../controllers/post.controller")
-const {addComment, getComment} = require("../controllers/comment.controller")
+const {addComment, getComments, getComment} = require("../controllers/comment.controller")
 const auth = require("../middleware/auth")
 
 const postRouter = express.Router()
@@ -25,5 +25,8 @@ postRouter.get("/get-all-info", auth, getAllInfo )
 // comments
 postRouter.post("/:postId/comment", auth, addComment)
 postRouter.get("/:postId/getComment", auth, getComment)
+postRouter.get("/getComments", auth, getComments)
 
 module.exports = postRouter
+
+// 5- abhinav 7- harshit 9-priya 11-neha 15- yamini 16-rahul

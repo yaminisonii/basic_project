@@ -15,7 +15,7 @@ router.get("/getUser/:id", auth, getUser)
 
 // change and reset password
 router.post("/change-password", auth, changePassword)
-router.post("/reset-password", passwordReset)
+router.post("/user-reset-password", passwordReset)
 router.post("/user-reset-password/:username/:token", userPasswordReset)
 
 

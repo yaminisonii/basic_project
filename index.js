@@ -26,7 +26,7 @@ User.sync({alter: true})
 Post.sync({force: false})
 Post.sync({alter: true})
 
-Comment.sync({force : false})
+Comment.sync({force : false}) 
 Comment.sync({alter: true})
 
 app.listen(process.env.PORT || 3000, (req, res) => {

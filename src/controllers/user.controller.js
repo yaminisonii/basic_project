@@ -120,7 +120,7 @@ const changePassword = async(req, res) => {
         if(!password || !email){
             return res.send("all fields are required")
         }
-        console.log(password);
+        // console.log(password);
         
         // checking if email and password is correct
         const user = await User.findOne({
@@ -137,7 +137,7 @@ const changePassword = async(req, res) => {
         // saving new password in db
             await user.save()
             res.send("password changed")
-            console.log(hashPassword);
+            // console.log(hashPassword);
     } catch (error) {
         console.log("error while updating password", error);
     }
@@ -157,25 +157,29 @@ const passwordReset = async(req, res) => {
         ]
     })
     if(!user){
-        return res.send("email does not exists")
+        return res.send("user does not exists")
     }
 
     // user exists: creating a new secret and generating a new token by using it
     const secret = user.username + secret_key
-    const token = jwt.sign({username : username}, secret, {expiresIn: '10m'})
+    const token = jwt.sign({username : username}, secret, {expiresIn: '15m'})
+
+    user.usedToken = token
+    await user.save()
+    
     // creating link
     const link = `http://localhost:3000/users/resetpassword/${token}`
-    console.log(link);
+    // console.log(link);
     
     // sending email
     const info = await transporter.sendMail({
-        from: 'xyz@gmail.com',
-        to: 'yaminisoni@gmail.com',
+        from: 'yamini.soni@novagems.in',
+        to: 'yaminisoni00@gmail.com', 
         subject: 'Password reset link',
         html: `<a href=${link}>Click here to reset password</a>`
     })
 
-    console.log(`password sent to ${to}`);
+    console.log(`password sent to the email`);
 
     res.send("Reset password link sent to the email")
 }
@@ -184,11 +188,11 @@ const passwordReset = async(req, res) => {
 const userPasswordReset = async(req, res) => {
     // need to verify user 
     const { password } = req.body
-    console.log("NEW PASSWORD ENTERED BY USER", password);
+    // console.log("NEW PASSWORD ENTERED BY USER", password);
     // need username and token from url
     const {username, token} = req.params // need to pass username and token in url while routing
-    if(!username){
-        res.send("username is required")
+    if (!token || !username) {
+        return res.status(400).send("token and username are required");
     }
 
     const user = await User.findOne({
@@ -199,24 +203,37 @@ const userPasswordReset = async(req, res) => {
     if(!user){
         res.send("user not found")
     }
+
+    // user.usedToken = token
+    // await user.save()
+
+
     // creating a new token using username and existing secret key
     const new_secret = user.username + secret_key
-    console.log("NEW SECRET", new_secret);
+    // console.log("NEW SECRET", new_secret);
     // verifying new_token and token we got from reset link
     try {
         jwt.verify(token, new_secret)
+
         if(!password){
             res.send("password is required")
+        }
+
+        if(user.usedToken !== token){
+            return res.send("token has already been used")
         }
         // hashing password and updating it in db
         const newHashPassword = await bcrypt.hash(password, 10)
         user.password = newHashPassword
+        // user.usedToken = token
+        user.usedToken = null
         await user.save()
-        console.log("NEW HASHED PASSWORD", newHashPassword);
+        // console.log("NEW HASHED PASSWORD", newHashPassword);
         res.send("password reset successfully")
+        
     } catch (error) {
         console.log("TOKEN VERIFICATION ERROR", error);
-        return res.send("cannot proceed further")
+        return res.send("cannot proceed further due to token expiry or token mismatch")
     }
 }
 

@@ -1,10 +1,11 @@
 const { DataTypes } = require('sequelize')
 const sequelize = require("../db/index");
-const Post = require('./post.model');
+// const Post = require('./post.model');
 
 const Comment = sequelize.define('Comment', {
     text: {
-        type: DataTypes.STRING
+        type: DataTypes.STRING,
+        allowNull: false
     },
     postId: {
         type: DataTypes.INTEGER,
@@ -13,10 +14,7 @@ const Comment = sequelize.define('Comment', {
 },
 {   tableName: 'comments',
     schema: 'project'
-}
-)
-
-Comment.belongsTo(Post, { foreignKey: 'postId', as: 'post'});
+})
 
 module.exports = Comment
 
